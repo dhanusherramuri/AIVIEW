@@ -1,78 +1,390 @@
 # AI Interview Assistant
 
-An AI-powered interview preparation application that helps users prepare for technical and HR interviews.
+An AI-powered interview preparation application that helps users prepare for technical and HR interviews through real-time question generation, response evaluation, and detailed feedback.
 
-## Tech Stack
+![Status](https://img.shields.io/badge/version-1.5.0-blue)
+![Iteration](https://img.shields.io/badge/iteration-1.5-green)
+![License](https://img.shields.io/badge/license-MIT-yellow)
+
+## 🎯 Features
+
+### Core Functionality
+- ✅ **User Authentication** - Secure signup/login with JWT tokens
+- ✅ **AI-Powered Interviews** - Real-time question generation based on role & difficulty
+- ✅ **6 Interview Tracks** - MERN, Frontend, Backend, Java, DevOps, Cybersecurity
+- ✅ **3 Difficulty Levels** - Easy, Medium, Hard
+- ✅ **Real-time Feedback** - Instant evaluation of your answers
+- ✅ **Interview History** - Track all your past interviews
+- ✅ **Final Scoring** - Comprehensive assessment with strengths & areas for improvement
+- ✅ **Protected Dashboard** - Secure user-specific data
+
+### AI Features (Iteration 1.5)
+- ✅ **Smart Question Generation** - Context-aware questions powered by Gemini AI
+- ✅ **Response Analysis** - Detailed feedback on each answer
+- ✅ **Conversation Memory** - AI maintains context throughout the interview
+- ✅ **Automatic Fallback** - Mock AI service when API quota exceeded
+- ✅ **Structured Logging** - Complete audit trail of AI interactions
+- ✅ **Error Resilience** - Retry logic and graceful degradation
+
+## 🛠️ Tech Stack
 
 **Frontend:**
-- React
-- Vite
-- Tailwind CSS
-- React Router
+- React 18
+- Vite (Fast build tool)
+- Tailwind CSS (Utility-first CSS)
+- React Router DOM (Navigation)
+- Axios (HTTP client)
 
 **Backend:**
 - Node.js
-- Express.js
+- Express.js (REST API)
+- ES Modules (Modern JavaScript)
 
 **Database:**
-- MongoDB Atlas
-- Mongoose
+- MongoDB Atlas (Cloud database)
+- Mongoose (ODM)
 
-**Authentication:**
-- JWT
-- bcrypt
+**Authentication & Security:**
+- JWT (JSON Web Tokens)
+- bcrypt (Password hashing)
+- CORS (Cross-origin security)
 
-## Project Structure
+**AI Integration:**
+- Google Gemini API (Primary)
+- Mock AI Service (Fallback)
+- Custom prompt engineering
+
+## 📁 Project Structure
 
 ```
 ai-interview-assistant/
-├── client/          # React frontend
-├── server/          # Express backend
-├── docs/            # Documentation
-└── README.md        # This file
+├── client/                     # React frontend
+│   ├── src/
+│   │   ├── components/        # Reusable UI components
+│   │   │   ├── Navbar.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   ├── context/           # React context (Auth)
+│   │   │   └── AuthContext.jsx
+│   │   ├── pages/             # Page components
+│   │   │   ├── LandingPage.jsx
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── SignupPage.jsx
+│   │   │   ├── DashboardPage.jsx
+│   │   │   ├── InterviewSetupPage.jsx
+│   │   │   └── InterviewPage.jsx
+│   │   ├── services/          # API services
+│   │   │   └── api.js
+│   │   ├── main.jsx           # Entry point
+│   │   └── App.jsx            # Main app component
+│   ├── .env                   # Environment variables
+│   ├── vite.config.js         # Vite configuration
+│   ├── tailwind.config.js     # Tailwind configuration
+│   └── package.json
+│
+├── server/                     # Express backend
+│   ├── src/
+│   │   ├── services/ai/       # AI services
+│   │   │   ├── geminiClient.js
+│   │   │   ├── questionService.js
+│   │   │   ├── feedbackService.js
+│   │   │   ├── evaluationService.js
+│   │   │   └── mockAiService.js
+│   │   ├── prompts/           # AI prompt templates
+│   │   │   ├── questionPrompt.js
+│   │   │   ├── feedbackPrompt.js
+│   │   │   └── finalEvaluationPrompt.js
+│   │   ├── utils/             # Utility functions
+│   │   │   ├── logger.js
+│   │   │   ├── retryAsync.js
+│   │   │   ├── parseGeminiResponse.js
+│   │   │   └── validateAIResponse.js
+│   │   └── models/            # Database models
+│   │       ├── User.js
+│   │       └── Interview.js
+│   ├── config/                # Configuration
+│   │   └── db.js
+│   ├── controllers/           # Route controllers
+│   │   ├── authController.js
+│   │   └── interviewController.js
+│   ├── middleware/            # Express middleware
+│   │   └── auth.js
+│   ├── routes/                # API routes
+│   │   ├── authRoutes.js
+│   │   └── interviewRoutes.js
+│   ├── services/              # Service layer
+│   │   └── geminiService.js
+│   ├── .env                   # Environment variables
+│   ├── server.js              # Main server entry
+│   └── package.json
+│
+├── docs/                       # Documentation
+├── PROJECT_REQUIREMENTS.md     # Product requirements
+├── PROJECT_CHECKLIST.md        # Implementation status
+├── AGENTS.md                   # Development guidelines
+└── README.md                   # This file
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v18+)
-- MongoDB Atlas account or local MongoDB
+- Node.js v18 or higher
+- npm or yarn
+- MongoDB Atlas account (free tier works)
+- Google Gemini API key (free from Google AI Studio)
 
-### Environment Setup
+### 1. Clone Repository
+```bash
+git clone <your-repo-url>
+cd ai-interview-assistant
+```
 
-1. Clone the repository
-2. Set up backend environment variables (see `server/.env.example`)
-3. Set up frontend environment variables (see `client/.env.example`)
-
-### Running the Application
-
-**Backend:**
+### 2. Backend Setup
 ```bash
 cd server
 npm install
-npm run dev
 ```
 
-**Frontend:**
+Configure environment variables in `server/.env`:
+```bash
+PORT=5000
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/interview-db
+JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
+GEMINI_API_KEY=your_gemini_api_key_from_google
+GEMINI_MODEL=gemini-2.0-flash
+USE_MOCK_AI=false
+```
+
+**Get Gemini API Key:**
+1. Visit https://aistudio.google.com/app/apikey
+2. Sign in with Google account
+3. Click "Create API Key"
+4. Copy and paste into `.env`
+
+### 3. Frontend Setup
+```bash
+cd ../client
+npm install
+```
+
+Configure environment variables in `client/.env`:
+```bash
+VITE_API_URL=http://localhost:5000/api
+```
+
+### 4. Run the Application
+
+**Start Backend (Terminal 1):**
+```bash
+cd server
+npm run dev
+```
+Server runs on http://localhost:5000
+
+**Start Frontend (Terminal 2):**
 ```bash
 cd client
-npm install
 npm run dev
 ```
+Frontend runs on http://localhost:3000
 
-## Iteration Status
+### 5. Access Application
+Open browser and navigate to: **http://localhost:3000**
 
-Current Iteration: **1 (Interview Core)**
+## 📖 Usage Guide
 
-Completed:
-- User authentication (signup, login)
-- Protected routes
-- Landing, Login, Signup, and Dashboard pages
-- MongoDB integration
-- AI interview flow with Gemini
-- Interview setup (role, difficulty selection)
-- Chat-based interview interface
-- Interview history tracking
-- Final evaluation and scoring
+### 1. Create Account
+- Click "Sign Up" on the landing page
+- Enter your name, email, and password
+- You'll be automatically logged in
 
-See `PROJECT_CHECKLIST.md` for detailed status.
+### 2. Start Interview
+- Click "Start Interview" from dashboard
+- Select your role (MERN, Frontend, Backend, Java, DevOps, or Cybersecurity)
+- Choose difficulty (Easy, Medium, or Hard)
+- Click "Start Interview"
+
+### 3. Answer Questions
+- Read the AI-generated question
+- Type your answer in the chat box
+- Submit to receive instant feedback
+- Continue through multiple questions
+
+### 4. Get Results
+- Complete all questions (or click "End Interview")
+- Receive final evaluation with:
+  - Overall score (0-100)
+  - Strengths identified
+  - Areas for improvement
+  - Personalized recommendations
+
+### 5. View History
+- Access dashboard to see all past interviews
+- Review previous scores and feedback
+- Track your improvement over time
+
+## 🔌 API Endpoints
+
+### Authentication
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/signup` | Create new account | No |
+| POST | `/api/auth/login` | Login user | No |
+| GET | `/api/auth/me` | Get current user | Yes |
+
+### Interviews
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/interview/start` | Start new interview | Yes |
+| POST | `/api/interview/:id/answer` | Submit answer | Yes |
+| POST | `/api/interview/:id/complete` | Complete interview | Yes |
+| GET | `/api/interview/:id` | Get interview details | Yes |
+| GET | `/api/interviews` | Get user's history | Yes |
+
+### Health Check
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/health` | Check server status | No |
+
+## 🔒 Security Features
+
+- **Password Hashing** - bcrypt with salt rounds
+- **JWT Authentication** - Secure token-based auth
+- **Protected Routes** - Middleware validation
+- **Input Validation** - Server-side checks
+- **CORS Protection** - Configured origins
+- **Environment Variables** - Secrets never committed
+
+## 🧪 Testing
+
+### Manual Testing Checklist
+- ✅ User signup flow
+- ✅ User login flow
+- ✅ Protected route redirection
+- ✅ Invalid credentials handling
+- ✅ Start interview flow
+- ✅ Answer submission
+- ✅ Interview completion
+- ✅ History retrieval
+
+### Run Tests (Future)
+```bash
+# Backend tests
+cd server
+npm test
+
+# Frontend tests
+cd client
+npm test
+```
+
+## 📊 Current Status
+
+### Completed (Iteration 1.5)
+✅ **Foundation Layer** - Authentication, database, routing  
+✅ **Interview Core** - AI questions, feedback, scoring  
+✅ **AI Hardening** - Prompts, validation, retry logic, logging  
+✅ **Fallback System** - Mock AI for quota exhaustion  
+
+### Next Up (Iteration 2: Analytics)
+🔲 Performance analytics dashboard  
+🔲 Score tracking and visualization  
+🔲 Progress charts over time  
+🔲 Detailed interview insights  
+
+See `PROJECT_CHECKLIST.md` for complete status.
+
+## ⚠️ Known Issues
+
+### API Quota Limits
+- Gemini free tier: 60 requests/minute, 1000 requests/day
+- When exceeded, system auto-fallbacks to mock AI
+- **Solution:** Set `USE_MOCK_AI=true` in `.env` for development
+
+### Mock AI Mode
+- Currently enabled by default due to API key format issue
+- Provides realistic questions but not truly AI-generated
+- **To enable real AI:** Get valid Gemini API key and set `USE_MOCK_AI=false`
+
+## 🛠️ Troubleshooting
+
+### Backend won't start
+```bash
+# Check MongoDB connection
+# Verify server/.env has correct MONGODB_URI
+# Ensure port 5000 is available
+```
+
+### Frontend won't connect
+```bash
+# Verify client/.env has correct VITE_API_URL
+# Ensure backend is running on port 5000
+# Check browser console for CORS errors
+```
+
+### AI not generating questions
+```bash
+# Check GEMINI_API_KEY in server/.env
+# Verify key format (should start with AIza...)
+# Check API quota at https://ai.dev/rate-limit
+# Set USE_MOCK_AI=true as temporary solution
+```
+
+### Login/Signup fails
+```bash
+# Verify MongoDB connection
+# Check JWT_SECRET is set
+# Ensure bcrypt is installed
+```
+
+## 📝 Environment Variables Reference
+
+### Server (.env)
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `PORT` | No | 5000 | Server port |
+| `MONGODB_URI` | **Yes** | - | MongoDB connection string |
+| `JWT_SECRET` | **Yes** | - | Secret for JWT tokens |
+| `GEMINI_API_KEY` | **Yes** | - | Google Gemini API key |
+| `GEMINI_MODEL` | No | gemini-2.0-flash | AI model to use |
+| `USE_MOCK_AI` | No | false | Use mock AI service |
+
+### Client (.env)
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `VITE_API_URL` | **Yes** | - | Backend API base URL |
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 👥 Authors
+
+- Your Name - Initial work
+
+## 🙏 Acknowledgments
+
+- Google Gemini AI for powering the interviews
+- React and Express communities
+- MongoDB for the database
+- All contributors
+
+## 📞 Support
+
+For issues and questions:
+- Create an issue on GitHub
+- Check existing documentation
+- Review PROJECT_REQUIREMENTS.md
+
+---
+
+**Last Updated:** June 5, 2026  
+**Current Version:** 1.5.0  
+**Iteration:** 1.5 (AI Hardening Complete)
