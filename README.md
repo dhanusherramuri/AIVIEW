@@ -19,10 +19,10 @@ An AI-powered interview preparation application that helps users prepare for tec
 - ✅ **Protected Dashboard** - Secure user-specific data
 
 ### AI Features (Iteration 1.5)
-- ✅ **Smart Question Generation** - Context-aware questions powered by Gemini AI
+- ✅ **Smart Question Generation** - Context-aware questions powered by Groq AI
 - ✅ **Response Analysis** - Detailed feedback on each answer
 - ✅ **Conversation Memory** - AI maintains context throughout the interview
-- ✅ **Automatic Fallback** - Mock AI service when API quota exceeded
+- ✅ **Automatic Fallback** - Mock AI service when API fails
 - ✅ **Structured Logging** - Complete audit trail of AI interactions
 - ✅ **Error Resilience** - Retry logic and graceful degradation
 
@@ -50,7 +50,7 @@ An AI-powered interview preparation application that helps users prepare for tec
 - CORS (Cross-origin security)
 
 **AI Integration:**
-- Google Gemini API (Primary)
+- Groq API (Primary - Llama 3.2, Mixtral, Gemma models)
 - Mock AI Service (Fallback)
 - Custom prompt engineering
 
@@ -84,7 +84,8 @@ ai-interview-assistant/
 ├── server/                     # Express backend
 │   ├── src/
 │   │   ├── services/ai/       # AI services
-│   │   │   ├── geminiClient.js
+│   │   │   ├── groqClient.js
+│   │   │   ├── generateContent.js
 │   │   │   ├── questionService.js
 │   │   │   ├── feedbackService.js
 │   │   │   ├── evaluationService.js
@@ -112,7 +113,7 @@ ai-interview-assistant/
 │   │   ├── authRoutes.js
 │   │   └── interviewRoutes.js
 │   ├── services/              # Service layer
-│   │   └── geminiService.js
+│   │   └── groqService.js
 │   ├── .env                   # Environment variables
 │   ├── server.js              # Main server entry
 │   └── package.json
@@ -130,7 +131,7 @@ ai-interview-assistant/
 - Node.js v18 or higher
 - npm or yarn
 - MongoDB Atlas account (free tier works)
-- Google Gemini API key (free from Google AI Studio)
+- Groq API key (free from Groq Console)
 
 ### 1. Clone Repository
 ```bash
@@ -149,16 +150,16 @@ Configure environment variables in `server/.env`:
 PORT=5000
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/interview-db
 JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-GEMINI_API_KEY=your_gemini_api_key_from_google
-GEMINI_MODEL=gemini-2.0-flash
+GROQ_API_KEY=your_groq_api_key_from_console.groq.com
+GROQ_MODEL=llama-3.3-70b-versatile
 USE_MOCK_AI=false
 ```
 
-**Get Gemini API Key:**
-1. Visit https://aistudio.google.com/app/apikey
-2. Sign in with Google account
+**Get Groq API Key:**
+1. Visit https://console.groq.com/keys
+2. Sign up or log in
 3. Click "Create API Key"
-4. Copy and paste into `.env`
+4. Copy your key (starts with `gsk_`) and paste into `.env`
 
 ### 3. Frontend Setup
 ```bash
@@ -283,7 +284,7 @@ npm test
 ✅ **Foundation Layer** - Authentication, database, routing  
 ✅ **Interview Core** - AI questions, feedback, scoring  
 ✅ **AI Hardening** - Prompts, validation, retry logic, logging  
-✅ **Fallback System** - Mock AI for quota exhaustion  
+✅ **Fallback System** - Mock AI for error handling  
 
 ### Next Up (Iteration 2: Analytics)
 🔲 Performance analytics dashboard  
@@ -296,14 +297,13 @@ See `PROJECT_CHECKLIST.md` for complete status.
 ## ⚠️ Known Issues
 
 ### API Quota Limits
-- Gemini free tier: 60 requests/minute, 1000 requests/day
-- When exceeded, system auto-fallbacks to mock AI
-- **Solution:** Set `USE_MOCK_AI=true` in `.env` for development
+- Groq free tier: Generous limits (as of 2024)
+- When errors occur, system auto-fallbacks to mock AI
+- **Solution:** Set `USE_MOCK_AI=true` in `.env` for development without API usage
 
 ### Mock AI Mode
-- Currently enabled by default due to API key format issue
 - Provides realistic questions but not truly AI-generated
-- **To enable real AI:** Get valid Gemini API key and set `USE_MOCK_AI=false`
+- **To enable real AI:** Get valid Groq API key and set `USE_MOCK_AI=false`
 
 ## 🛠️ Troubleshooting
 
@@ -323,9 +323,9 @@ See `PROJECT_CHECKLIST.md` for complete status.
 
 ### AI not generating questions
 ```bash
-# Check GEMINI_API_KEY in server/.env
-# Verify key format (should start with AIza...)
-# Check API quota at https://ai.dev/rate-limit
+# Check GROQ_API_KEY in server/.env
+# Verify key format (should start with gsk_)
+# Check Groq console for API status
 # Set USE_MOCK_AI=true as temporary solution
 ```
 
@@ -344,8 +344,8 @@ See `PROJECT_CHECKLIST.md` for complete status.
 | `PORT` | No | 5000 | Server port |
 | `MONGODB_URI` | **Yes** | - | MongoDB connection string |
 | `JWT_SECRET` | **Yes** | - | Secret for JWT tokens |
-| `GEMINI_API_KEY` | **Yes** | - | Google Gemini API key |
-| `GEMINI_MODEL` | No | gemini-2.0-flash | AI model to use |
+| `GROQ_API_KEY` | **Yes** | - | Groq API key |
+| `GROQ_MODEL` | No | llama-3.3-70b-versatile | AI model to use |
 | `USE_MOCK_AI` | No | false | Use mock AI service |
 
 ### Client (.env)
@@ -371,7 +371,7 @@ This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- Google Gemini AI for powering the interviews
+- Groq AI for powering the interviews with fast, free models
 - React and Express communities
 - MongoDB for the database
 - All contributors
@@ -385,6 +385,6 @@ For issues and questions:
 
 ---
 
-**Last Updated:** June 5, 2026  
+**Last Updated:** June 6, 2026  
 **Current Version:** 1.5.0  
 **Iteration:** 1.5 (AI Hardening Complete)
