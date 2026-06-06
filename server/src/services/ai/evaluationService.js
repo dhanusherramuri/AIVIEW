@@ -1,5 +1,4 @@
 import { generateContent } from './generateContent.js';
-import { getInterviewModelName } from './geminiClient.js';
 import { buildFinalEvaluationPrompt } from '../../prompts/finalEvaluationPrompt.js';
 import { retryAsync } from '../../utils/retryAsync.js';
 import { validateEvaluationResponse } from '../../utils/validateAIResponse.js';
@@ -22,13 +21,11 @@ export const generateFinalEvaluation = async (conversationHistory, role, difficu
       return await generateMockFinalEvaluation(conversationHistory, role, difficulty);
     }
 
-    const modelName = getInterviewModelName();
-    const apiKey = process.env.GEMINI_API_KEY;
     const prompt = buildFinalEvaluationPrompt(role, difficulty, conversationHistory);
 
     logger.info(`Generating final evaluation for ${role} - ${difficulty}`);
 
-    const response = await retryAsync(() => generateContent(modelName, apiKey, prompt));
+    const response = await retryAsync(() => generateContent(prompt));
     
     validateEvaluationResponse(response);
 

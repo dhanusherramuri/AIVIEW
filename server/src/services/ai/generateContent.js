@@ -1,56 +1,43 @@
+import { getGroqClient, getInterviewModelName } from './groqClient.js';
 import { parseGeminiResponse } from '../../utils/parseGeminiResponse.js';
 import logger from '../../utils/logger.js';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
-
 /**
- * Generates content using Gemini AI via direct API call
- * This bypasses the SDK to support AQ. format API keys
- * @param {string} modelName - Model name (e.g., gemini-2.0-flash)
- * @param {string} apiKey - Gemini API key
+ * Generates content using Groq AI
  * @param {string} prompt - Prompt to send to the model
  * @returns {Promise<object>} Parsed JSON response
  */
-export const generateContent = async (modelName, apiKey, prompt) => {
-  const url = `${GEMINI_API_URL}/${modelName}:generateContent?key=${apiKey}`;
-  
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-goog-api-key': apiKey,
-    },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 1024,
-      }
-    }),
+export const generateContent = async (prompt) => {
+  const client = getGroqClient();
+  const modelName = getInterviewModelName();
+
+  const response = await client.chat.completions.create({
+    model: modelName,
+    messages: [
+      {
+        role: 'system',
+        content: 'You are an expert technical interviewer. Always respond with valid JSON only, no markdown formatting.',
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+    temperature: 0.7,
+    max_tokens: 1024,
+    top_p: 0.95,
   });
+
+  const text = response.choices[0]?.message?.content || '';
   
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    logger.error('Gemini API error', { 
-      status: response.status, 
-      statusText: response.statusText,
-      details: errorData 
-    });
-    throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+  if (!text) {
+    throw new Error('Empty response from Groq API');
   }
-  
-  const data = await response.json();
-  
-  if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-    throw new Error('Invalid response format from Gemini API');
-  }
-  
-  const text = data.candidates[0].content.parts[0].text;
+
+  logger.info('Groq API response received', { 
+    model: modelName, 
+    tokens_used: response.usage?.total_tokens 
+  });
+
   return parseGeminiResponse(text);
 };
